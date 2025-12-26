@@ -1,38 +1,30 @@
 'use strict';
 
 // write code here
-const listElement = [...document.querySelectorAll('li')];
+const listElement = document.querySelector('ul');
+const itemsElement = [...listElement.children];
 
 function parseSalary(salary) {
   return +salary.slice(1).split(',').join('');
 }
 
-function sortList(list) {
-  return list.sort((person1, person2) => person2.salary - person1.salary);
+function sortList(items) {
+  items.sort(
+    (a, b) => parseSalary(b.dataset.salary) - parseSalary(a.dataset.salary),
+  );
+  items.forEach((item) => listElement.appendChild(item));
 }
 
-function getEmployees(list) {
-  return list.map((person) => {
+function getEmployees(items) {
+  return items.map((item) => {
     return {
-      name: person.textContent.trim(),
-      age: person.getAttribute('data-age'),
-      position: person.getAttribute('data-position'),
-      salary: parseSalary(person.getAttribute('data-salary')),
+      name: item.textContent,
+      age: item.getAttribute('data-age'),
+      position: item.getAttribute('data-position'),
+      salary: item.getAttribute('data-salary'),
     };
   });
 }
 
-listElement.map((el, index) => {
-  el.textContent = sortList(getEmployees(listElement))[index].name;
-  el.setAttribute('data-age', sortList(getEmployees(listElement))[index].age);
-
-  el.setAttribute(
-    'data-position',
-    sortList(getEmployees(listElement))[index].position,
-  );
-
-  el.setAttribute(
-    'data-salary',
-    sortList(getEmployees(listElement))[index].salary,
-  );
-});
+sortList(itemsElement);
+getEmployees(itemsElement);
